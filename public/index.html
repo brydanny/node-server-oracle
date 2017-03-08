@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>Cuentas</title>
+
+    <link href="/static/bootstrap/css/bootstrap.css" rel="stylesheet">
+    <link href="/static/bootstrap/css/bootstrap-theme.css" rel="stylesheet">
+
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="/static/bootstrap/css/bootstrap.css">
+
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="/static/bootstrap/css/bootstrap-theme.css">
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="/static/bootstrap/js/bootstrap.js"></script>
+
+    <script src="/static/js/jquery.min.js"></script>
+
+    <!--  <script src="/vendor/socket.io-client/socket.io.js"></script>-->
+
+    <script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
+
+    <style>
+        .jumbotron{margin-top: 20px;}
+    </style>
+
+    <script>
+        $(document).ready(function() {
+            var socket = io();
+            fetchCuentas();
+        });
+        function fetchCuentas() {
+            $.get('/api/cuentas', function(cities) {
+                showCuentas(cities);
+            });
+        }
+        function showCuentas(cuentas) {
+            var cuentasList = $('#cuentas').find('tbody');
+
+            cuentasList.empty();
+
+            cuentas.forEach(function(cuenta) {
+                cuentasList.append(
+                    '<tr>' +
+                    '<td>' + cuenta.CTS_CUENTA_MAYOR + '</td>' +
+                    '<td>' + cuenta.CTS_CUENTA + '</td>' +
+                    '<td>' + cuenta.CTS_ALIAS + '</td>' +
+                    '<td>' + cuenta.CTS_NOMBRE + '</td>' +
+                    '<td>' + cuenta.CTS_CTAAJ1 + '</td>' +
+                    '<td>' + cuenta.CTS_TIPO + '</td>' +
+                    '<td>' + cuenta.CTS_NIVEL + '</td>' +
+                    '<td>' + cuenta.CTS_CLASE + '</td>' +
+                    '<td>' + cuenta.TTC_MONEDA + '</td>' +
+                    '<td>' + cuenta.CTS_SIGNO + '</td>' +
+                    '<td>' + cuenta.CTS_DSC + '</td>' +
+                    '<td>' + cuenta.CTS_DSM + '</td>' +
+                    '<td>' + cuenta.CTS_EMPRESA + '</td>' +
+                    '<td>' + cuenta.CTS_GESTION + '</td>' +
+                    '<td><a class="btn btn-default" role="button">' +
+                    '   <span class="glyphicon glyphicon-arrow-up"></span> Upvote!' +
+                    '</a></td>' +
+                    '</tr>'
+                );
+                /*
+                cuentasList.append(
+                    '<tr city-id="' + city.ID + '">' +
+                    '<td>' + city.NAME + '</td>' +
+                    '<td>' + city.NIVEL + '</td>' +
+                    '<td><a class="btn btn-default" role="button">' +
+                    '   <span class="glyphicon glyphicon-arrow-up"></span> Upvote!' +
+                    '</a></td>' +
+                    '</tr>'
+                );*/
+            });
+        }
+        /*
+        $(document).ready(function() {
+            var socket = io();
+            fetchCities();
+
+            $('#cities').on('click', 'a.btn', function() {
+                //var cityId = Number($(this).closest('tr').attr('city-id'));
+                var cityId = $(this).closest('tr').attr('city-id');
+                alert(cityId);
+                $.post('/api/vote', {ID: cityId});
+            });
+            console.log("antes socket");
+            socket.on('change', function(cities) {
+                console.log("llego");
+                showCities(cities);
+                console.log(cities);
+            });
+        });
+        */
+
+        /*
+        function fetchCities() {
+            $.get('/api/super-cities', function(cities) {
+                showCities(cities);
+            });
+        }
+
+        function showCities(cities) {
+            var citiesList = $('#cities').find('tbody');
+
+            citiesList.empty();
+
+            cities.forEach(function(city) {
+                citiesList.append(
+                    '<tr city-id="' + city.ID + '">' +
+                    '<td>' + city.NAME + '</td>' +
+                    '<td>' + city.NIVEL + '</td>' +
+                    '<td><a class="btn btn-default" role="button">' +
+                    '   <span class="glyphicon glyphicon-arrow-up"></span> Upvote!' +
+                    '</a></td>' +
+                    '</tr>'
+                );
+            });
+        }
+        */
+    </script>
+</head>
+<body>
+<div class="container">
+    <div class="jumbotron">
+        <h1>Administración de Cuentas</h1>
+    </div>
+    <table id="cuentas" class="table table-striped">
+        <thead>
+        <tr>
+            <th>CTS_CUENTA_MAYOR</th>
+            <th>CTS_CUENTA</th>
+            <th>CTS_ALIAS</th>
+            <th>CTS_NOMBRE</th>
+            <th>CTS_CTAAJ1</th>
+            <th>CTS_TIPO</th>
+            <th>CTS_NIVEL</th>
+            <th>CTS_CLASE</th>
+            <th>TTC_MONEDA</th>
+            <th>CTS_SIGNO</th>
+            <th>CTS_DSC</th>
+            <th>CTS_DSM</th>
+            <th>CTS_EMPRESA</th>
+            <th>CTS_GESTION</th>
+            <th>&nbsp;</th>
+        </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>
