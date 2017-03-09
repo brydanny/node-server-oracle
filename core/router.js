@@ -1,11 +1,7 @@
 
 var express = require('express');
 var router = express.Router();
-router.use('/departament', require('../modules/departament/departamentRoot'));
-router.use('/employees', require('../modules/employees/employeesRoot'));
-router.use('/job_history', require('../modules/job_history/job_historyRoot'));
-router.use('/jobs', require('../modules/jobs/jobsRoot'));
-router.use('/util',require('../modules/util/utilRoot'));
+router.use('/example', require('../modules/example/exampleRoot'));
 module.exports = router;
 
 /*
