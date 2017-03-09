@@ -99,11 +99,11 @@ export default class Table{
             });
         });
     }
-    getRows(maxNumRows, offset,orderBy){
+    getRows(maxNumRows, offset,cWhere,orderBy){
         var self = this;
         var sql;
         return new Promise(function (resolve,reject) {
-            sql = "SELECT A.*, COUNT(*) OVER()NUMREG FROM " + self.schema + "."+ self.tableName + " A ORDER BY A." + orderBy;
+            sql = "SELECT A.*, COUNT(*) OVER()NUMREG FROM " + self.schema + "."+ self.tableName + " A " + cWhere +" ORDER BY A." + orderBy;
             console.log("sql previo: " + sql);
             if(self.connection.oracleServerVersion > 1201000000){
                 // 12c row-limiting syntax

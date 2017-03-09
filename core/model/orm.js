@@ -19,11 +19,15 @@ export default class Orm {
         this.offsetSelectDefault = configPage.pagination.offsetSelectDefault;
     }
 
-    setResponseSelect(schema, tableName,objAlias,maxNumRows, offset,orderBy,pathName){
+    setResponseSelect(schema, tableName,objAlias,cWhere,maxNumRows, offset,orderBy,pathName){
         var table;
         var meta;
         var response;
         var self = this;
+        var operator = '?';
+        if(cWhere != ''){
+            operator = '&';
+        }
         return new Promise(function (resolve, reject) {
             table = new Table(self.connection,schema,tableName);
             table.getColumns().then(function (columns) {
@@ -51,17 +55,17 @@ export default class Orm {
                  var offsetPrevious = parseInt(offsetSelect) - parseInt(limitSelect);
                  var offsetNext = parseInt(offsetSelect) + parseInt(limitSelect);
                  //console.log("number: " + offsetNext);
-                 table.getRows(limitSelect, offsetSelect,orderBySelect).then(function (results) {
+                 table.getRows(limitSelect, offsetSelect,cWhere,orderBySelect).then(function (results) {
                      var nextUrl;
                      if(offsetNext < results.rows[0]['NUMREG']){
-                         nextUrl = pathName + '?per_page=' + limitSelect + '&offset=' + offsetNext;
+                         nextUrl = pathName + operator + 'per_page=' + limitSelect + '&offset=' + offsetNext;
                      }
                      else{
                          nextUrl = null;
                      }
                      var previousUrl;
                      if(offsetPrevious >= 0){
-                         previousUrl = pathName + '?per_page=' + limitSelect + '&offset=' + offsetPrevious;
+                         previousUrl = pathName + operator + 'per_page=' + limitSelect + '&offset=' + offsetPrevious;
                      }
                      else{
                          previousUrl = null;
@@ -91,7 +95,7 @@ export default class Orm {
                          //return reject(err);
                          var previousUrl;
                          if(offsetPrevious >= 0){
-                             previousUrl = pathName + '?per_page=' + limitSelect + '&offset=' + offsetPrevious;
+                             previousUrl = pathName + operator + 'per_page=' + limitSelect + '&offset=' + offsetPrevious;
                          }
                          else{
                              previousUrl = null;
@@ -106,15 +110,18 @@ export default class Orm {
             });
         });
     }
-    setResponseSelectView(schema, viewName,id,objAlias,maxNumRows, offset,orderBy,pathName){
+    setResponseSelectView(schema, viewName,id,objAlias,cWhere,maxNumRows, offset,orderBy,pathName){
         var view;
         var meta;
         var response;
         var self = this;
+        var operator = '?';
+        if(cWhere != ''){
+            operator = '&';
+        }
         return new Promise(function (resolve, reject) {
             view = new Table(self.connection,schema,viewName);
             view.getColumns().then(function (columns) {
-                    //set limit, offset, orderBy
                     var limitSelect;
                     if(maxNumRows){
                         limitSelect = maxNumRows;
@@ -137,29 +144,45 @@ export default class Orm {
                     var offsetPrevious = parseInt(offsetSelect) - parseInt(limitSelect);
                     var offsetNext = parseInt(offsetSelect) + parseInt(limitSelect);
                     //console.log("number: " + offsetNext);
-                    view.getRows(limitSelect, offsetSelect,orderBySelect).then(function (results) {
+                    view.getRows(limitSelect, offsetSelect,cWhere,orderBySelect).then(function (results) {
                         var nextUrl;
                         if(offsetNext < results.rows[0]['NUMREG']){
-                            nextUrl = pathName + '?per_page=' + limitSelect + '&offset=' + offsetNext;
+                            nextUrl = pathName + operator + 'per_page=' + limitSelect + '&offset=' + offsetNext;
                         }
                         else{
                             nextUrl = null;
                         }
                         var previousUrl;
                         if(offsetPrevious >= 0){
-                            previousUrl = pathName + '?per_page=' + limitSelect + '&offset=' + offsetPrevious;
+                            previousUrl = pathName + operator + 'per_page=' + limitSelect + '&offset=' + offsetPrevious;
                         }
                         else{
                             previousUrl = null;
                         }
+                        /*
+                        console.log('*************************************');
+                        console.log('COLUMNS----------------------------- ');
+                        console.log('*************************************');
+                        console.log(columns);
+                        console.log('*************************************');
+                        console.log('ALIAS----------------------------- ');
+                        console.log('*************************************');
+                        console.log(objAlias);
+                        */
                         var cols = [];
-                        for(var x in columns){
-                            cols.push(columns[x]);
-                            var nomElem = columns[x].name;
-                            if (objAlias[nomElem]){
-                                columns[x].alias = objAlias[nomElem].alias;
-                            }
+                            for(var x in columns){
+                                cols.push(columns[x]);
+                                var nomElem = columns[x].name;
+                                if (objAlias[nomElem]){
+                                    columns[x].alias = objAlias[nomElem].alias;
+                                }
                         };
+                        /*
+                        console.log('*************************************');
+                        console.log('COLS----------------------------- ');
+                        console.log('*************************************');
+                        console.log(cols);
+                        */
                         meta = new Meta(viewName,cols,id,results.rows.length,offsetSelect,previousUrl,nextUrl,results.rows[0]['NUMREG']);
                         response = new Response(meta,results.rows);
                         /*console.log("----------");
@@ -177,7 +200,7 @@ export default class Orm {
                             //return reject(err);
                             var previousUrl;
                             if(offsetPrevious >= 0){
-                                previousUrl = pathName + '?per_page=' + limitSelect + '&offset=' + offsetPrevious;
+                                previousUrl = pathName + operator + 'per_page=' + limitSelect + '&offset=' + offsetPrevious;
                             }
                             else{
                                 previousUrl = null;
@@ -191,7 +214,7 @@ export default class Orm {
             });
         });
     }
-    setResponseSelectCodVal(schema, viewName,codigo,valor,objAlias,orderBy){
+    setResponseSelectCodVal(schema, viewName,codigo,valor,objAlias,cWhere,orderBy){
         var view;
         var meta;
         var response;
