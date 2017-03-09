@@ -16,6 +16,6 @@ router.get('/:id', function(req, res) {
     example.findId(req,res);
 });
 router.post('/suma', function(req, res) {
-    util.suma(req,res);
+    example.suma(req,res);
 });
 module.exports = router;
